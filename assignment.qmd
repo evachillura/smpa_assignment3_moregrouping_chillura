@@ -91,74 +91,62 @@ impeach %>%
 The relevant column for that is `trump_percent`.
 
 ```{r}
-
-
-
-
-
-
-
-
-
-
+#I did the same as question 4 but swapped the variable in the mean() function and changed the name of the "new" column to reflect what it is measuring.
+impeach %>% 
+  group_by(for_impeachment) %>% 
+  summarise(average_trump_percent = mean(trump_percent))
 ```
 
 6)  Filter out only the members who are a yes for impeachment. Then of those "Yes" member, how many won their 2018 election by less than 5 percentage points (`margin_flag_2018`) vs. more?
 
 ```{r}
-
-  
-
-
-
-
-
-
-
+#I started by filtering all the responses in for_impeach to "YES" using the filter() function, then I grouped the data by the variable margin_flag_2018. Then, I used the summarise() function with count = n() to count the responses.
+impeach %>% 
+  filter(for_impeachment == "YES") %>% 
+  group_by(margin_flag_2018) %>% 
+  summarise(count = n())
 ```
+
+For the members who favored impeachment, `17` won their election in 2018 by less than 5 percentage points, and `192` won their election in 2018 by 5 or more election points. 
 
 7)  Come up with another breakdown of your choosing for how you'd like to examine this dataset. Say what you'll look at, and then put the code below to find the answer.
 
 ```{r}
+impeach %>% 
+  filter(flip_2018 == "Y") %>% 
+  group_by(for_impeachment) %>% 
+  summarise(flip_y = n())
 
-  
-
-
-
-
-
-
-
+impeach %>% 
+  filter(flip_2018 == "N") %>% 
+  group_by(for_impeachment) %>% 
+  summarise(flip_n = n())
 ```
+
+I am assuming that the variable `flip_2018` refers to districts who's party flipped in the 2018 election. From that assumption, I wanted to see how many districts flipped and how that is reflected in whether or not the member voted `YES` or `NO` for impeachment. I split up the code into the different filters, so it could be easier for me to visualize the differences between flipped districts and non-flipped districts. 
+
+For the `r sum(flip_y)` districts that flipped in the 2018 election cycle, `31` were in favor of impeachment and `12` were not. Considering that all of the members in this dataframe are from the democratic party which was the minority hold in the House of Representatives prior to 2018, the results from this grouping exercise were not surprising. The amount of flipped seats reflects the predictable change in majority hold in the House during midterm elections when the opposite party is in presidential power. 
+
+Also, the percentage of the district that flipped and were not in favor of impeachment compared to the districts that did not flip was interesting. For the districts that flipped in 2018, `r 100*(12/(12+31))`% voted `NO` for impeachment, while only `r 100*(14/(14+178))`% of the districts that did not flip in 2018 voted `NO` for impeachment, which is quite a stark difference. While the sample sizes of these to groups are not necessarily the best to compare, it does allow me to speculate further on how being a flipped district from Republican to Democrat might affect the voting behavior in the impeachment (i.e. making more conservative decisions to not anger the old republican base). I remember from my own district -- South Carolina 1 -- our house seat flipped that midterm cycle and our district was democratic for the first time since I've been alive. It was an insane night, and while I may have been too young to vote at the time, it still felt like a tremendous victory for us. However, Cunningham had to tread lightly because the victory was narrow, and Charleston has deep-rooted republican ties, especially with the old money in the town that has quantifiable power. One of his decisions that was controversial among his democratic base in the district was his vote `NO` on Trump's first impeachment. This happening in late 2019 and early 2020 when he was gearing up for his re-relection in the fall. I was curious to see if other flipped districts behaved similarly and how much of a difference it was to those districts that did not flip in 2018. 
 
 7)  You'll see a column in the table called date_announced. For members who came out as a Yes for impeachment, this is the date they announced their support for it.  
   
 Use the mutate() function to create two new columns: one that extracts the year from date_announced, and a second that extracts the month.
 
 ```{r}
-
-  
-
-
-
-
-
-
-
+#I used the mutate() function and within, I named my two new columns "year_announced" and "month_announced" which I assigned to the respective functions year() and month() which mutated the "date_announced" column. Then, to add these new variables to the dataframe, I assigned the whole chunck of code to "impeach."
+impeach <- impeach %>%
+  mutate(year_announced = year(date_announced),
+         month_announced = month(date_announced))
 ```
 
 8) Using the new columns you created in #7, use grouping to count up how many House Democrats during each month announced their support of impeachment.
 
 ```{r}
-
-  
-
-
-
-
-
-
-
+#I grouped by the new column "month_announced" and summarized by count. 
+impeach %>% 
+  group_by(month_announced) %>% 
+  summarise(count = n())
 ```
 
 
