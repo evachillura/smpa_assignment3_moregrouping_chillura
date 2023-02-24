@@ -43,46 +43,35 @@ Write your code using grouping in the chunks below to help answer the following 
 1)  How many members in the dataset favor impeachment vs. not (using the `for_impeachment` column)?
 
 ```{r}
-
-
-
-
-
-
-
-
+#grouping by the column "for_impeachment" to see how many are "yes" versus "no."
+#Using the summarise() function with "count = n()" to count the number of "yes"s
+#and "no"s.
+impeach %>% 
+  group_by(for_impeachment) %>% 
+  summarise(count = n())
 ```
+
+From the `impeach` dataset, it reveals that `209` members favored impeachment by responding `YES` to the survey, while only `26` did not favor impeachment through their response of `NO` to the survey.  
 
 2)  Similar to #1 above, using grouping to now break down the Democratic House members by TWO measures: those who are for or against impeachment (as you did above)....and then districts above/below national GDP.  
   
 You'll want to ensure you do the grouping on both columns together, e.g. `group_by(column1, column2)`
 
 ```{r}
-
-
-
-
-
-
-
-
-
-
+#using the group_by() function again, but this time adding a comma and the other
+#variable that the question asks to distinguish
+impeach %>%
+  group_by(for_impeachment, gdp_above_national) %>%
+  summarise(count = n())
 ```
 
 3)  Now do the same as #2, but this time instead of GDP, group by whether the district is above or below the national average for the percentage of college graduates. The column that captures this information is `pct_bachelors_compared_to_national`.
 
 ```{r}
-
-
-
-
-
-
-
-
-
-
+#same as question 2 but changing the variable
+impeach %>%
+  group_by(for_impeachment, pct_bachelors_compared_to_national) %>% 
+  summarise(count = n())
 ```
 
 4)  Let's look at the college graduation comparison in a slightly different way.  
@@ -92,15 +81,10 @@ Instead of counting how many districts are above/below the national average, thi
 In other words, you want to end up with the calculated mean for what that percentage is for the Yes districts and the No districts.
 
 ```{r}
-
-
-
-
-
-
-
-
-
+#this time I only grouped by for_impeachment because it was the only categorical variable needed to examine the pct_bachelors. I then used summarize() and created a name for the new column (that is not yet added to the dataset) called "average_pct_bachelors" to which I made equal to the mean() of pct_bachelors. 
+impeach %>% 
+  group_by(for_impeachment) %>% 
+  summarise(average_pct_bachelors = mean(pct_bachelors))
 ```
 
 5)  Do the same as #4, but this time show the MEAN *percentage of the vote that Donald Trump received* for districts that are Yes for impeachment vs. No.  
